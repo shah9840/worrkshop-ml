@@ -1,6 +1,9 @@
 import tkinter as tk
 from PIL import ImageTk, Image
 from tkinter import filedialog
+import numpy as np
+from keras.models import load_model
+model = load_model('./Model/rockpaper.h5')
 
  
 # #Initialize Window
@@ -34,7 +37,16 @@ def load_img():
     panel_image = tk.Label(frame, image=img).pack()
 
 def classify(file_path):
-    return
+    image= Image.open(file_path)
+    image = image.resize((224,224))
+    image = np.expand_dims(image, axis=0)
+    image = image/225.0
+    pred = model.predict(image)
+    serialize = np.argmax(pred,-1)
+    classes = ['Paper','Rock','Scissor']
+    res = classes[int(serialize[0])]
+    result.config(text=res)
+    result.update()
 
 
 # #Create Buttons
